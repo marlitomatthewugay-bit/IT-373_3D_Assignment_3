@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from .models import Announcement
 
 # Create your views here.
 
@@ -13,16 +14,13 @@ def home(request):
     }
     return render(request, 'home.html', context)
 
-def about(request):
-    return render(request, 'about.html', {'title': 'About'})
+def announcement_list(request):
+    announcements = Announcement.objects.all().order_by("-created_at")
+    return render(request, "announcements/list.html", {"announcements": announcements})
 
-def hello(request, name):
-    return render(request, 'hello.html', {'name': name})
-
-def gallery(request):
-    #assume images placed in pages/static/img
-    images = ['img1.jpg', 'img2.jpg', 'img3.jpg']
-    return render(request, 'gallery.html', {'images': images})
+def announcement_detail(request, id):
+    announcement = get_object_or_404(Announcement, id=id)
+    return render(request, "announcements/detail.html", {"announcement": announcement})
 
 def page_not_found_view(request, exception):
     return render(request, '404.html', status=404)
